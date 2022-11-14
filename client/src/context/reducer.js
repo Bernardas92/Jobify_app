@@ -1,16 +1,6 @@
-import React, { useReducer, useContext } from 'react'
-import axios from 'axios'
-
-
 import {
   DISPLAY_ALERT,
   CLEAR_ALERT,
-  REGISTER_USER_BEGIN,
-  REGISTER_USER_SUCCESS,
-  REGISTER_USER_ERROR,
-  LOGIN_USER_BEGIN,
-  LOGIN_USER_SUCCESS,
-  LOGIN_USER_ERROR,
   SETUP_USER_BEGIN,
   SETUP_USER_SUCCESS,
   SETUP_USER_ERROR,
@@ -34,7 +24,7 @@ import {
   SHOW_STATS_BEGIN,
   SHOW_STATS_SUCCESS,
   CLEAR_FILTERS,
-  CHANGE_PAGE
+  CHANGE_PAGE,
 } from './actions'
 
 import { initialState } from './appContext'
@@ -57,38 +47,13 @@ const reducer = (state, action) => {
     }
   }
 
-  if (action.type === REGISTER_USER_BEGIN) {
-    return { ...state, isLoading: true }
-  }
-  if (action.type === REGISTER_USER_SUCCESS) {
-    return {
-      ...state,
-      isLoading: false,
-      token: action.payload.token,
-      user: action.payload.user,
-      userLocation: action.payload.location,
-      jobLocation: action.payload.location,
-      showAlert: true,
-      alertType: 'success',
-      alertText: 'User Created! Redirecting...',
-    }
-  }
-  if (action.type === REGISTER_USER_ERROR) {
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: action.payload.msg,
-    }
-  }
   if (action.type === SETUP_USER_BEGIN) {
     return { ...state, isLoading: true }
   }
   if (action.type === SETUP_USER_SUCCESS) {
     return {
       ...state,
-      isLoading: false,
+      isLoading: true,
       token: action.payload.token,
       user: action.payload.user,
       userLocation: action.payload.location,
@@ -107,49 +72,24 @@ const reducer = (state, action) => {
       alertText: action.payload.msg,
     }
   }
-  if (action.type === LOGIN_USER_BEGIN) {
-    return { ...state, isLoading: true }
-  }
-  if (action.type === LOGIN_USER_SUCCESS) {
-    return {
-      ...state,
-      isLoading: false,
-      token: action.payload.token,
-      user: action.payload.user,
-      userLocation: action.payload.location,
-      jobLocation: action.payload.location,
-      showAlert: true,
-      alertType: 'success',
-      alertText: 'Login Successful! Redirecting...',
-    }
-  }
-  if (action.type === LOGIN_USER_ERROR) {
-    return {
-      ...state,
-      isLoading: false,
-      showAlert: true,
-      alertType: 'danger',
-      alertText: action.payload.msg,
-    }
-  }
   if (action.type === TOGGLE_SIDEBAR) {
-    return { ...state, showSidebar: !state.showSidebar }
+    return {
+      ...state,
+      showSidebar: !state.showSidebar,
+    }
   }
-
   if (action.type === LOGOUT_USER) {
     return {
       ...initialState,
       user: null,
       token: null,
-      userLocation: '',
       jobLocation: '',
+      userLocation: '',
     }
   }
-
   if (action.type === UPDATE_USER_BEGIN) {
     return { ...state, isLoading: true }
   }
-
   if (action.type === UPDATE_USER_SUCCESS) {
     return {
       ...state,
@@ -172,11 +112,13 @@ const reducer = (state, action) => {
       alertText: action.payload.msg,
     }
   }
-
   if (action.type === HANDLE_CHANGE) {
-    return { ...state, page: 1,  [action.payload.name]: action.payload.value }
+    return {
+      ...state,
+      page: 1,
+      [action.payload.name]: action.payload.value,
+    }
   }
-
   if (action.type === CLEAR_VALUES) {
     const initialState = {
       isEditing: false,
@@ -187,12 +129,16 @@ const reducer = (state, action) => {
       jobType: 'full-time',
       status: 'pending',
     }
-    return { ...state, ...initialState }
-  }
 
+    return {
+      ...state,
+      ...initialState,
+    }
+  }
   if (action.type === CREATE_JOB_BEGIN) {
     return { ...state, isLoading: true }
   }
+
   if (action.type === CREATE_JOB_SUCCESS) {
     return {
       ...state,
@@ -211,7 +157,6 @@ const reducer = (state, action) => {
       alertText: action.payload.msg,
     }
   }
-
   if (action.type === GET_JOBS_BEGIN) {
     return { ...state, isLoading: true, showAlert: false }
   }
@@ -224,7 +169,6 @@ const reducer = (state, action) => {
       numOfPages: action.payload.numOfPages,
     }
   }
-
   if (action.type === SET_EDIT_JOB) {
     const job = state.jobs.find((job) => job._id === action.payload.id)
     const { _id, position, company, jobLocation, jobType, status } = job
@@ -239,13 +183,14 @@ const reducer = (state, action) => {
       status,
     }
   }
-
   if (action.type === DELETE_JOB_BEGIN) {
     return { ...state, isLoading: true }
   }
-
   if (action.type === EDIT_JOB_BEGIN) {
-    return { ...state, isLoading: true }
+    return {
+      ...state,
+      isLoading: true,
+    }
   }
   if (action.type === EDIT_JOB_SUCCESS) {
     return {
@@ -265,9 +210,12 @@ const reducer = (state, action) => {
       alertText: action.payload.msg,
     }
   }
-
   if (action.type === SHOW_STATS_BEGIN) {
-    return { ...state, isLoading: true, showAlert: false }
+    return {
+      ...state,
+      isLoading: true,
+      showAlert: false,
+    }
   }
   if (action.type === SHOW_STATS_SUCCESS) {
     return {
@@ -277,7 +225,6 @@ const reducer = (state, action) => {
       monthlyApplications: action.payload.monthlyApplications,
     }
   }
-
   if (action.type === CLEAR_FILTERS) {
     return {
       ...state,
@@ -287,12 +234,10 @@ const reducer = (state, action) => {
       sort: 'latest',
     }
   }
-
   if (action.type === CHANGE_PAGE) {
     return { ...state, page: action.payload.page }
   }
-
-  throw new Error(`no such action: ${action.type}`)
+  throw new Error(`no such action : ${action.type}`)
 }
 
 export default reducer

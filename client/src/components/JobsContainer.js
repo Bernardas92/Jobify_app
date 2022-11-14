@@ -22,10 +22,10 @@ const JobsContainer = () => {
     getJobs()
     // eslint-disable-next-line
   }, [page, search, searchStatus, searchType, sort])
-
   if (isLoading) {
     return <Loading center />
   }
+
   if (jobs.length === 0) {
     return (
       <Wrapper>
@@ -33,6 +33,7 @@ const JobsContainer = () => {
       </Wrapper>
     )
   }
+
   return (
     <Wrapper>
       <h5>
